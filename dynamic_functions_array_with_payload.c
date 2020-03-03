@@ -18,6 +18,9 @@ typedef struct {
     radio_cb_t init_radio;
 } radio_functions_t;
 
+// 807 release defined these two parameters in board_info.h
+// this will be used to create the matrix size
+#define MAX_RADIOS  3
 enum radios
 {
     RADIO_1,
@@ -26,12 +29,11 @@ enum radios
 };
 
 // select which radio to use for this slot
-// this will be initialized in ti1ORri1
+// this will be used locally but will be initialized in ti1ORri1
 int SELECTED_RADIO = RADIO_1;
 
-// 807 release defined these two parameters in board_info.h
-// this will be used to create the matrix size
-int MAX_RADIOS = 3;
+//function call back matrix
+radio_functions_t dyn_funcs [MAX_RADIOS];
 
 // Radio specific functions. These will be placed in separate .c files
 // such as radio_RADIO1.c and radio_RADIO2.c
@@ -71,12 +73,13 @@ void tx_radio_rad3(char * str)
     printf("Tx from Radio 3\n");
     printf(str);
 }
-int main ()
+
+// ================ Bootstrapping ==========
+
+// initializing the lookup table for radio function callbacks
+void bootstrap()
 {
-    //selected radio 0=RADIO1 or 1=RADIO2
-    radio_functions_t dyn_funcs [MAX_RADIOS];
-    
-    // initializing the lookup table for radio function callbacks
+    printf("Bootstrapping radios\n");
     dyn_funcs [0].init_radio    =   rad1_init;
     dyn_funcs [1].init_radio    =   rad2_init;   
     dyn_funcs [2].init_radio    =   rad3_init;   
@@ -84,13 +87,19 @@ int main ()
     dyn_funcs [0].tx_radio      =   tx_radio_rad1;
     dyn_funcs [1].tx_radio      =   tx_radio_rad2;
     dyn_funcs [2].tx_radio      =   tx_radio_rad3;
-    
+    printf("Bootstrapping finished\n");
+}
+
+int main ()
+{
+    bootstrap();
     // Initialize and transmit from selected radio
     for (int i =0; i< MAX_RADIOS; i++)
     {
-        SELECTED_RADIO = i;
+        SELECTED_RADIO = i; //will be configured from ti1ORri1
+        
         dyn_funcs [SELECTED_RADIO].init_radio();
-        char payload [12]= "\tmy packet";
+        char payload [12]= "\tmy packet\n";
         dyn_funcs [SELECTED_RADIO].tx_radio(payload);   
     }
 
