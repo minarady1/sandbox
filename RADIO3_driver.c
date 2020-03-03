@@ -6,10 +6,10 @@ mina1.rady@orange.com
 
 #include <stdio.h>
 
-// Radio specific functions. These will be placed in separate .c files
-#include "RADIO1_driver.c"
-#include "RADIO2_driver.c"
-#include "RADIO3_driver.c"
+// Radio specific functions. These are placed in separate .c files
+#include "drivers/RADIO1_driver.c"
+#include "drivers/RADIO2_driver.c"
+#include "drivers/RADIO3_driver.c"
 
 // radio functions callback types declaration
 typedef void                (*radio_cb_t)(void);
@@ -41,8 +41,8 @@ int SELECTED_RADIO = RADIO_1;
 radio_functions_t dyn_funcs [MAX_RADIOS];
 
 
-// ================ Bootstrapping ==========
 
+// ================ Bootstrapping ==========
 // initializing the lookup table for radio function callbacks
 void bootstrap()
 {
