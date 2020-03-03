@@ -7,9 +7,9 @@ mina1.rady@orange.com
 #include <stdio.h>
 
 // Radio specific functions. These will be placed in separate .c files
-#include "RADIO1_driver.c"
-#include "RADIO2_driver.c"
-#include "RADIO3_driver.c"
+#include "drivers/RADIO1_driver.c"
+#include "drivers/RADIO2_driver.c"
+#include "drivers/RADIO3_driver.c"
 
 // radio functions callback types declaration
 typedef void                (*radio_cb_t)(void);
